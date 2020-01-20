@@ -4,10 +4,12 @@ public class Cell {
     private int row;
     private int col;
     private boolean goal;
+    private int cost;
 
     Cell(){
         setValue("  ");    //"X" -> Obstacle, "  " -> Empty, "#" -> Counter Values
         setGoal(false);
+        setCost(-1);
     }
     //Retrieve col
     public int getCol() {
@@ -46,6 +48,17 @@ public class Cell {
     //Set goal inside this cell
 	public void setGoal(boolean goal) {
 		this.goal = goal;
-	}
+  }
+
+  public int getCost()
+  {
+    return cost;
+  }
+
+  public void setCost(int cost)
+  {
+    this.cost = cost;
+  }
+  
 }
 
