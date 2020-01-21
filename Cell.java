@@ -9,7 +9,7 @@ public class Cell {
     Cell(){
         setValue("  ");    //"X" -> Obstacle, "  " -> Empty, "#" -> Counter Values
         setGoal(false);
-        setCost(-1);
+        setCost(0);
     }
     //Retrieve col
     public int getCol() {

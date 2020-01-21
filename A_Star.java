@@ -19,8 +19,11 @@ public class A_Star {
             //Call expand function
             expand(grid, frontier);
             //Find next current cell and set it
-            
+            currentCell = nextCell(grid, frontier);
         }
+
+        //Print the grid
+        printGrid(grid);
     }
 
     //Expands the current cell on all sides
@@ -38,6 +41,7 @@ public class A_Star {
             grid[currRow][currCol - 1].setCost(findCost(grid, grid[currRow][currCol - 1]));
             //add expanded cell to the frontier
             frontier.add(grid[currRow][currCol - 1]);
+
         } //endWestCheck
 
         //If North cell is not blocked & is empty
@@ -83,14 +87,28 @@ public class A_Star {
     public static Cell nextCell(Cell[][] grid, ArrayList<Cell> frontier)
     {
         //Rearrange frontier in terms of cost
-        
+        Collections.sort(frontier, new SortByCost());
         
         //Rearrange frontier in terms of counter
-        
+        int tempCost = frontier.get(0).getCost();
+        int min_index;
+        for(int i = 0; i < frontier.size()-1 && frontier.get(i).getCost() == tempCost; i++)
+        {
+             min_index = i;
+             for(int j = i+1; j < frontier.size() && frontier.get(i).getCost() == tempCost; j++)
+             {
+                if(Integer.parseInt(frontier.get(j).getValue()) < Integer.parseInt(frontier.get(min_index).getValue()))
+                {
+                    min_index = j;
+                }
+                Cell temp = frontier.get(min_index);
+                frontier.set(min_index, frontier.get(j));
+                frontier.set(j, temp);  
+             }
+        }
 
         //Return the first cell
-
-
+        return frontier.get(0);
     }
 
     public static int findCost(Cell[][] grid, Cell neighborCell) 
@@ -102,20 +120,37 @@ public class A_Star {
         //                      North => neighbor cell row - current cell row
         //                      East => neighbor cell col - current cell col
         //                      South => neighbor cell row - current cell row
-        totalCost += (2 * Math.abs(neighborCell.getCol() - currentCell.getCol())) + 
-                     (1 * Math.abs(neighborCell.getRow() - currentCell.getRow())) + 
-                     (2 * Math.abs(neighborCell.getCol() - currentCell.getCol())) +
-                     (3 * Math.abs(neighborCell.getRow() - currentCell.getRow())); 
+        if (neighborCell.getCol() != currentCell.getCol())
+        {
+            totalCost += (2 * (Math.abs(neighborCell.getCol() - currentCell.getCol())));
+        }
+        if (neighborCell.getRow() < currentCell.getRow())
+        {
+            totalCost += (1 * (Math.abs(neighborCell.getRow() - currentCell.getRow())));
+        }
+        else if (neighborCell.getRow() > currentCell.getRow())
+        {
+            totalCost += (3 * (Math.abs(neighborCell.getRow() - currentCell.getRow())));
+        }
         
         //Cost toGoal:  West => neighbor cell col - goal cell col
         //              North => neighbor cell row - goal cell row
         //              East => neighbor cell col - goal cell col
         //              South => neighbor cell row - goal cell row
         //Cost final:   Cost NeighborCell + toGoal
-        totalCost += (2 * Math.abs(neighborCell.getCol() - goalCell.getCol())) + 
-                     (1 * Math.abs(neighborCell.getRow() - goalCell.getRow())) + 
-                     (2 * Math.abs(neighborCell.getCol() - goalCell.getCol())) +
-                     (3 * Math.abs(neighborCell.getRow() - goalCell.getRow())); 
+        
+        if (neighborCell.getCol() != goalCell.getCol())
+        {
+            totalCost += (2 * (Math.abs(neighborCell.getCol() - goalCell.getCol())));
+        }
+        if (neighborCell.getRow() < goalCell.getRow())
+        {
+            totalCost += (1 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
+        }
+        else if (neighborCell.getRow() > goalCell.getRow())
+        {
+            totalCost += (3 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
+        }
         return totalCost;
     }
 
@@ -159,4 +194,26 @@ public class A_Star {
         counter = 0;
         frontier.add(currentCell);
     } //End loadGrid
+
+
+    public static void printGrid(Cell[][] grid) 
+    {
+        for (int row = 0; row < grid.length; row++)
+        {
+            for (int col = 0; col < grid[row].length; col++)
+            {
+                System.out.print(grid[row][col].getValue() + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for (int row = 0; row < grid.length; row++)
+        {
+            for (int col = 0; col < grid[row].length; col++)
+            {
+                System.out.print(grid[row][col].getCost() + " ");
+            }
+            System.out.println();
+        }
+    }//End printGrid
 }
