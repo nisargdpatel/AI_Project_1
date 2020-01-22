@@ -6,6 +6,7 @@ public class A_Star {
     static Cell currentCell;
     static int counter;
     static Cell goalCell;
+    static Cell homeCell;
     public static void main(String[] args) {
         Cell[][] grid = new Cell[6][7];
         ArrayList<Cell> frontier = new ArrayList<>();
@@ -42,6 +43,14 @@ public class A_Star {
             //add expanded cell to the frontier
             frontier.add(grid[currRow][currCol - 1]);
 
+            System.out.print("Frontier Value: ");
+            for (int i = 0; i < frontier.size(); i++)
+            {
+                System.out.print(frontier.get(i).getValue() + " ");
+            }
+            System.out.println();
+
+
         } //endWestCheck
 
         //If North cell is not blocked & is empty
@@ -54,6 +63,15 @@ public class A_Star {
             grid[currRow - 1][currCol].setCost(findCost(grid, grid[currRow - 1][currCol]));
             //Update frontier
             frontier.add(grid[currRow - 1][currCol]);    
+
+            System.out.print("Frontier Value: ");
+            for (int i = 0; i < frontier.size(); i++)
+            {
+                System.out.print(frontier.get(i).getValue() + " ");
+            }
+            System.out.println();
+
+
         } //endNorthCheck
 
         //If East cell is not blocked & is empty
@@ -66,6 +84,15 @@ public class A_Star {
             grid[currRow][currCol + 1].setCost(findCost(grid, grid[currRow][currCol + 1]));
             //Update frontier
             frontier.add(grid[currRow][currCol + 1]);
+
+            System.out.print("Frontier Value: ");
+            for (int i = 0; i < frontier.size(); i++)
+            {
+                System.out.print(frontier.get(i).getValue() + " ");
+            }
+            System.out.println();
+
+
         }//endEastCheck
 
         //If South cell is not blocked & is empty
@@ -78,6 +105,16 @@ public class A_Star {
             grid[currRow + 1][currCol].setCost(findCost(grid, grid[currRow + 1][currCol]));
             //Update frontier
             frontier.add(grid[currRow + 1][currCol]);
+
+
+            System.out.print("Frontier Value: ");
+            for (int i = 0; i < frontier.size(); i++)
+            {
+                System.out.print(frontier.get(i).getValue() + " ");
+            }
+            System.out.println();
+
+
         }//endSouthCheck        
 
         frontier.remove(currentCell);
@@ -89,6 +126,16 @@ public class A_Star {
         //Rearrange frontier in terms of cost
         Collections.sort(frontier, new SortByCost());
         
+
+        System.out.print("Collections Frontier Value: ");
+            for (int i = 0; i < frontier.size(); i++)
+            {
+                System.out.print(frontier.get(i).getValue() + " ");
+            }
+            System.out.println();
+
+
+
         //Rearrange frontier in terms of counter
         int tempCost = frontier.get(0).getCost();
         int min_index;
@@ -100,12 +147,21 @@ public class A_Star {
                 if(Integer.parseInt(frontier.get(j).getValue()) < Integer.parseInt(frontier.get(min_index).getValue()))
                 {
                     min_index = j;
-                }
-                Cell temp = frontier.get(min_index);
+                    Cell temp = frontier.get(min_index);
                 frontier.set(min_index, frontier.get(j));
-                frontier.set(j, temp);  
+                frontier.set(j, temp); 
+                }
+                 
              }
         }
+
+            System.out.print("Sorted Frontier Value: ");
+            for (int i = 0; i < frontier.size(); i++)
+            {
+                System.out.print(frontier.get(i).getValue() + " ");
+            }
+            System.out.println();
+
 
         //Return the first cell
         return frontier.get(0);
@@ -120,17 +176,17 @@ public class A_Star {
         //                      North => neighbor cell row - current cell row
         //                      East => neighbor cell col - current cell col
         //                      South => neighbor cell row - current cell row
-        if (neighborCell.getCol() != currentCell.getCol())
+        if (neighborCell.getCol() != homeCell.getCol())
         {
-            totalCost += (2 * (Math.abs(neighborCell.getCol() - currentCell.getCol())));
+            totalCost += (2 * (Math.abs(neighborCell.getCol() - homeCell.getCol())));
         }
-        if (neighborCell.getRow() < currentCell.getRow())
+        if (neighborCell.getRow() < homeCell.getRow())
         {
-            totalCost += (1 * (Math.abs(neighborCell.getRow() - currentCell.getRow())));
+            totalCost += (1 * (Math.abs(neighborCell.getRow() - homeCell.getRow())));
         }
-        else if (neighborCell.getRow() > currentCell.getRow())
+        else if (neighborCell.getRow() > homeCell.getRow())
         {
-            totalCost += (3 * (Math.abs(neighborCell.getRow() - currentCell.getRow())));
+            totalCost += (3 * (Math.abs(neighborCell.getRow() - homeCell.getRow())));
         }
         
         //Cost toGoal:  West => neighbor cell col - goal cell col
@@ -145,11 +201,11 @@ public class A_Star {
         }
         if (neighborCell.getRow() < goalCell.getRow())
         {
-            totalCost += (1 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
+            totalCost += (3 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
         }
         else if (neighborCell.getRow() > goalCell.getRow())
         {
-            totalCost += (3 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
+            totalCost += (1 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
         }
         return totalCost;
     }
@@ -187,6 +243,7 @@ public class A_Star {
         //Goal
         grid[3][4].setGoal(true);
         goalCell = grid[3][4];
+        homeCell = grid[0][1];
         
         //Starting point
         grid[0][1].setValue("00");
@@ -206,6 +263,7 @@ public class A_Star {
             }
             System.out.println();
         }
+        
         System.out.println();
         for (int row = 0; row < grid.length; row++)
         {
