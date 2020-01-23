@@ -6,7 +6,6 @@ public class A_Star {
     static Cell currentCell;
     static int counter;
     static Cell goalCell;
-    static Cell homeCell;
     public static void main(String[] args) {
         Cell[][] grid = new Cell[6][7];
         ArrayList<Cell> frontier = new ArrayList<>();
@@ -24,6 +23,8 @@ public class A_Star {
         }
 
         //Print the grid
+        System.out.println("Username: NISARGP, MAITRABP");
+        System.out.println("Outcome for A* Search:");
         printGrid(grid);
     }
 
@@ -39,18 +40,15 @@ public class A_Star {
             counter++;
             String updateVal = String.format("%02d" , counter); //add leading 0 if single digit
             grid[currRow][currCol - 1].setValue(updateVal);
+
+            //Update path cost
             grid[currRow][currCol - 1].setCost(currentCell.getCost() + 2);
-            // grid[currRow][currCol - 1].setCost(findCost(grid, grid[currRow][currCol - 1]));
+
+            //Estimate cost to goal cell and update total cost
+            grid[currRow][currCol - 1].setTotalCost(findCost(grid, grid[currRow][currCol - 1]));
+
             //add expanded cell to the frontier
             frontier.add(grid[currRow][currCol - 1]);
-
-            System.out.print("Frontier Value: ");
-            for (int i = 0; i < frontier.size(); i++)
-            {
-                System.out.print(frontier.get(i).getValue() + " ");
-            }
-            System.out.println();
-
 
         } //endWestCheck
 
@@ -61,18 +59,15 @@ public class A_Star {
             counter++;
             String updateVal = String.format("%02d" , counter); //add leading 0 if single digit
             grid[currRow - 1][currCol].setValue(updateVal);
+
+            //Update path past
             grid[currRow - 1][currCol].setCost(currentCell.getCost() + 1);
-            // grid[currRow - 1][currCol].setCost(findCost(grid, grid[currRow - 1][currCol]));
+
+            //Estimate cost to goal cell and update total cost
+            grid[currRow - 1][currCol].setTotalCost(findCost(grid, grid[currRow - 1][currCol]));
+
             //Update frontier
-            frontier.add(grid[currRow - 1][currCol]);    
-
-            System.out.print("Frontier Value: ");
-            for (int i = 0; i < frontier.size(); i++)
-            {
-                System.out.print(frontier.get(i).getValue() + " ");
-            }
-            System.out.println();
-
+            frontier.add(grid[currRow - 1][currCol]);  
 
         } //endNorthCheck
 
@@ -83,18 +78,15 @@ public class A_Star {
             counter++;
             String updateVal = String.format("%02d" , counter); //add leading 0 if single digit
             grid[currRow][currCol + 1].setValue(updateVal);
+
+            //Update path cost
             grid[currRow][currCol + 1].setCost(currentCell.getCost() + 2);
-            // grid[currRow][currCol + 1].setCost(findCost(grid, grid[currRow][currCol + 1]));
+
+            //Estimate cost to goal cell and update total cost
+            grid[currRow][currCol + 1].setTotalCost(findCost(grid, grid[currRow][currCol + 1]));
+
             //Update frontier
             frontier.add(grid[currRow][currCol + 1]);
-
-            System.out.print("Frontier Value: ");
-            for (int i = 0; i < frontier.size(); i++)
-            {
-                System.out.print(frontier.get(i).getValue() + " ");
-            }
-            System.out.println();
-
 
         }//endEastCheck
 
@@ -105,19 +97,15 @@ public class A_Star {
             counter++;
             String updateVal = String.format("%02d" , counter); //add leading 0 if single digit
             grid[currRow + 1][currCol].setValue(updateVal);
+
+            //Update path cost
             grid[currRow + 1][currCol].setCost(currentCell.getCost() + 3);
-            // grid[currRow + 1][currCol].setCost(findCost(grid, grid[currRow + 1][currCol]));
+
+            //Estimate cost to goal cell and update total cost
+            grid[currRow + 1][currCol].setTotalCost(findCost(grid, grid[currRow + 1][currCol]));
+
             //Update frontier
             frontier.add(grid[currRow + 1][currCol]);
-
-
-            System.out.print("Frontier Value: ");
-            for (int i = 0; i < frontier.size(); i++)
-            {
-                System.out.print(frontier.get(i).getValue() + " ");
-            }
-            System.out.println();
-
 
         }//endSouthCheck        
 
@@ -127,105 +115,37 @@ public class A_Star {
     //Returns next cell to move to
     public static Cell nextCell(Cell[][] grid, ArrayList<Cell> frontier)
     {
-        // ArrayList<Cell> tempFrontier = new ArrayList<>();
-        // tempFrontier.addAll(frontier);
-
-        // for(int i = 0; i < tempFrontier.length(); i++)
-        // {
-        //     for(int j = 0; j < tempFrontier[i].length(); j++)
-        //     tempFrontier.get(i).setCost(findCost(grid, tempFrontier));
-        // }
-
-        //Rearrange frontier in terms of cost
+        //Sort frontier by cost
         Collections.sort(frontier, new SortByCost());
         
-
-        System.out.print("Collections Frontier Value: ");
-            for (int i = 0; i < frontier.size(); i++)
-            {
-                System.out.print(frontier.get(i).getValue() + " ");
-            }
-            System.out.println();
-
-
-
-        //Rearrange frontier in terms of counter
-        int tempCost = frontier.get(0).getCost();
+        //Sort frontier by counter
+        int tempCost = frontier.get(0).getTotalCost();
         int min_index;
-        for(int i = 0; i < frontier.size()-1 && frontier.get(i).getCost() == tempCost; i++)
+        for(int i = 0; i < frontier.size()-1 && frontier.get(i).getTotalCost() == tempCost; i++)
         {
              min_index = i;
-             for(int j = i+1; j < frontier.size() && frontier.get(i).getCost() == tempCost; j++)
+             for(int j = i+1; j < frontier.size() && frontier.get(i).getTotalCost() == tempCost; j++)
              {
                 if(Integer.parseInt(frontier.get(j).getValue()) < Integer.parseInt(frontier.get(min_index).getValue()))
                 {
                     min_index = j;
                     Cell temp = frontier.get(min_index);
-                frontier.set(min_index, frontier.get(j));
-                frontier.set(j, temp); 
+                    frontier.set(min_index, frontier.get(j));
+                    frontier.set(j, temp);  
                 }
-                 
+                
              }
         }
-
-            System.out.print("Sorted Frontier Value: ");
-            for (int i = 0; i < frontier.size(); i++)
-            {
-                System.out.print(frontier.get(i).getValue() + " ");
-            }
-            System.out.println();
-
 
         //Return the first cell
         return frontier.get(0);
     }
 
+    //Returns estimated cost from neighbor cell to goal cell
     public static int findCost(Cell[][] grid, Cell neighborCell) 
     {
         int totalCost = 0;
-        //Equation: 2w + n + 2e + 3s => w=west, n=north, e=east, s=south
-        //Given: current cell row/col & neighbor cell row/col
-        //Cost NeighborCell:    West => neighbor cell col - current cell col
-        //                      North => neighbor cell row - current cell row
-        //                      East => neighbor cell col - current cell col
-        //                      South => neighbor cell row - current cell row
-        // if (neighborCell.getCol() != homeCell.getCol())
-        // {
-            
-        // }
 
-        // if (neighborCell.getCol() < homeCell.getCol())  //If moving left
-        // {
-        //     // totalCost += (2 * (Math.abs(neighborCell.getCol() - grid[currentCell.getRow()][currentCell.getCol()+1].getCol())));
-        //     totalCost += (2 + grid[currentCell.getRow()][currentCell.getCol()+1].getCost());
-        // }
-        // else if (neighborCell.getCol() > homeCell.getCol())     //If moving right
-        // {
-        //     // totalCost += (2 * (Math.abs(neighborCell.getCol() - homeCell.getCol())));
-        //     totalCost += (2 + grid[currentCell.getRow()][currentCell.getCol()-1].getCost());
-        // }
-        // if (neighborCell.getRow() < homeCell.getRow())          //If moving up
-        // {
-        //     // totalCost += (1 * (Math.abs(neighborCell.getRow() - homeCell.getRow())));
-        //     totalCost += (1 + grid[currentCell.getRow()+1][currentCell.getRow()].getCost());
-        // }
-        // else if (neighborCell.getRow() > homeCell.getRow())     //If moving down
-        // {
-        //     // totalCost += (3 * (Math.abs(neighborCell.getRow() - homeCell.getRow())));
-        //     totalCost += (3 + grid[currentCell.getRow()-1][currentCell.getCol()].getCost());
-        // }
-        // totalCost += currentCell.getCost();
-        
-        //Cost toGoal:  West => neighbor cell col - goal cell col
-        //              North => neighbor cell row - goal cell row
-        //              East => neighbor cell col - goal cell col
-        //              South => neighbor cell row - goal cell row
-        //Cost final:   Cost NeighborCell + toGoal
-        
-        // if (neighborCell.getCol() != goalCell.getCol())
-        // {
-        //     totalCost += (2 * (Math.abs(neighborCell.getCol() - goalCell.getCol())));
-        // }
         if (neighborCell.getCol() < goalCell.getCol())      //If moving right
         {
             totalCost += (2 * (Math.abs(neighborCell.getCol() - goalCell.getCol())));
@@ -234,6 +154,7 @@ public class A_Star {
         {
             totalCost += (2 * (Math.abs(neighborCell.getCol() - goalCell.getCol())));
         }
+
         if (neighborCell.getRow() < goalCell.getRow())      //If moving down
         {
             totalCost += (3 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
@@ -242,10 +163,11 @@ public class A_Star {
         {
             totalCost += (1 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
         }
+
         return totalCost;
     }
 
-
+    //Loads the initial components on grid
     public static void loadGrid(Cell[][] grid, ArrayList<Cell> frontier)
     {
         //Initialize Grid
@@ -278,7 +200,6 @@ public class A_Star {
         //Goal
         grid[3][4].setGoal(true);
         goalCell = grid[3][4];
-        homeCell = grid[0][1];
         
         //Starting point
         grid[0][1].setValue("00");
@@ -287,26 +208,22 @@ public class A_Star {
         frontier.add(currentCell);
     } //End loadGrid
 
-
+    
     public static void printGrid(Cell[][] grid) 
     {
         for (int row = 0; row < grid.length; row++)
         {
             for (int col = 0; col < grid[row].length; col++)
             {
-                System.out.print(grid[row][col].getValue() + " ");
-            }
-            System.out.println();
-        }
-        
-        System.out.println();
-        for (int row = 0; row < grid.length; row++)
-        {
-            for (int col = 0; col < grid[row].length; col++)
-            {
-                System.out.print(grid[row][col].getCost() + " ");
+                
+                if (grid[row][col].getValue() == "[]")
+                {
+                    System.out.print("   ");
+                } else {
+                    System.out.print(grid[row][col].getValue() + " ");    
+                }
             }
             System.out.println();
         }
     }//End printGrid
-}
+}//End class A_Star

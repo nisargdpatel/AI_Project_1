@@ -5,6 +5,6 @@ class SortByCost implements Comparator<Cell>
     // roll number 
     public int compare(Cell a, Cell b) 
     { 
-        return a.getCost() - b.getCost(); 
+        return a.getTotalCost() - b.getTotalCost(); 
     } 
 } 

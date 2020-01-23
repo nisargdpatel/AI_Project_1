@@ -174,19 +174,6 @@ public class DFS {
 
     public static void modifyGridperPath(Stack<Cell> tempStack, Cell[][] grid)
     {
-        // for (int row = 0; row < grid.length; row++)
-        // {
-        //     for (int col = 0; col < grid[row].length; col++)
-        //     {
-        //         grid[row][col].setValue("  ");
-        //     }
-        // }
-        // while(!tempStack.empty())
-        // {
-        //     grid[tempStack.peek().getRow()][tempStack.peek().getCol()].setValue(tempStack.peek().getValue());
-        //     tempStack.pop();
-        // }
-        
         loadGrid(grid, tempStack);
         for(int row = 0; row < grid.length; row++)
         {

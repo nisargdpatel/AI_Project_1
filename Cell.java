@@ -5,11 +5,13 @@ public class Cell {
     private int col;
     private boolean goal;
     private int cost;
+    private int totalCost;
 
     Cell(){
         setValue("  ");    //"X" -> Obstacle, "  " -> Empty, "#" -> Counter Values
         setGoal(false);
         setCost(0);
+        setTotalCost(0);
     }
     //Retrieve col
     public int getCol() {
@@ -58,6 +60,16 @@ public class Cell {
   public void setCost(int cost)
   {
     this.cost = cost;
+  }
+
+  public int getTotalCost()
+  {
+    return totalCost;
+  }
+
+  public void setTotalCost(int totalCost)
+  {
+    this.totalCost = totalCost + cost;
   }
   
 }
