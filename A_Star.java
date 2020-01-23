@@ -39,7 +39,8 @@ public class A_Star {
             counter++;
             String updateVal = String.format("%02d" , counter); //add leading 0 if single digit
             grid[currRow][currCol - 1].setValue(updateVal);
-            grid[currRow][currCol - 1].setCost(findCost(grid, grid[currRow][currCol - 1]));
+            grid[currRow][currCol - 1].setCost(currentCell.getCost() + 2);
+            // grid[currRow][currCol - 1].setCost(findCost(grid, grid[currRow][currCol - 1]));
             //add expanded cell to the frontier
             frontier.add(grid[currRow][currCol - 1]);
 
@@ -60,7 +61,8 @@ public class A_Star {
             counter++;
             String updateVal = String.format("%02d" , counter); //add leading 0 if single digit
             grid[currRow - 1][currCol].setValue(updateVal);
-            grid[currRow - 1][currCol].setCost(findCost(grid, grid[currRow - 1][currCol]));
+            grid[currRow - 1][currCol].setCost(currentCell.getCost() + 1);
+            // grid[currRow - 1][currCol].setCost(findCost(grid, grid[currRow - 1][currCol]));
             //Update frontier
             frontier.add(grid[currRow - 1][currCol]);    
 
@@ -81,7 +83,8 @@ public class A_Star {
             counter++;
             String updateVal = String.format("%02d" , counter); //add leading 0 if single digit
             grid[currRow][currCol + 1].setValue(updateVal);
-            grid[currRow][currCol + 1].setCost(findCost(grid, grid[currRow][currCol + 1]));
+            grid[currRow][currCol + 1].setCost(currentCell.getCost() + 2);
+            // grid[currRow][currCol + 1].setCost(findCost(grid, grid[currRow][currCol + 1]));
             //Update frontier
             frontier.add(grid[currRow][currCol + 1]);
 
@@ -102,7 +105,8 @@ public class A_Star {
             counter++;
             String updateVal = String.format("%02d" , counter); //add leading 0 if single digit
             grid[currRow + 1][currCol].setValue(updateVal);
-            grid[currRow + 1][currCol].setCost(findCost(grid, grid[currRow + 1][currCol]));
+            grid[currRow + 1][currCol].setCost(currentCell.getCost() + 3);
+            // grid[currRow + 1][currCol].setCost(findCost(grid, grid[currRow + 1][currCol]));
             //Update frontier
             frontier.add(grid[currRow + 1][currCol]);
 
@@ -123,6 +127,15 @@ public class A_Star {
     //Returns next cell to move to
     public static Cell nextCell(Cell[][] grid, ArrayList<Cell> frontier)
     {
+        // ArrayList<Cell> tempFrontier = new ArrayList<>();
+        // tempFrontier.addAll(frontier);
+
+        // for(int i = 0; i < tempFrontier.length(); i++)
+        // {
+        //     for(int j = 0; j < tempFrontier[i].length(); j++)
+        //     tempFrontier.get(i).setCost(findCost(grid, tempFrontier));
+        // }
+
         //Rearrange frontier in terms of cost
         Collections.sort(frontier, new SortByCost());
         
@@ -176,18 +189,32 @@ public class A_Star {
         //                      North => neighbor cell row - current cell row
         //                      East => neighbor cell col - current cell col
         //                      South => neighbor cell row - current cell row
-        if (neighborCell.getCol() != homeCell.getCol())
-        {
-            totalCost += (2 * (Math.abs(neighborCell.getCol() - homeCell.getCol())));
-        }
-        if (neighborCell.getRow() < homeCell.getRow())
-        {
-            totalCost += (1 * (Math.abs(neighborCell.getRow() - homeCell.getRow())));
-        }
-        else if (neighborCell.getRow() > homeCell.getRow())
-        {
-            totalCost += (3 * (Math.abs(neighborCell.getRow() - homeCell.getRow())));
-        }
+        // if (neighborCell.getCol() != homeCell.getCol())
+        // {
+            
+        // }
+
+        // if (neighborCell.getCol() < homeCell.getCol())  //If moving left
+        // {
+        //     // totalCost += (2 * (Math.abs(neighborCell.getCol() - grid[currentCell.getRow()][currentCell.getCol()+1].getCol())));
+        //     totalCost += (2 + grid[currentCell.getRow()][currentCell.getCol()+1].getCost());
+        // }
+        // else if (neighborCell.getCol() > homeCell.getCol())     //If moving right
+        // {
+        //     // totalCost += (2 * (Math.abs(neighborCell.getCol() - homeCell.getCol())));
+        //     totalCost += (2 + grid[currentCell.getRow()][currentCell.getCol()-1].getCost());
+        // }
+        // if (neighborCell.getRow() < homeCell.getRow())          //If moving up
+        // {
+        //     // totalCost += (1 * (Math.abs(neighborCell.getRow() - homeCell.getRow())));
+        //     totalCost += (1 + grid[currentCell.getRow()+1][currentCell.getRow()].getCost());
+        // }
+        // else if (neighborCell.getRow() > homeCell.getRow())     //If moving down
+        // {
+        //     // totalCost += (3 * (Math.abs(neighborCell.getRow() - homeCell.getRow())));
+        //     totalCost += (3 + grid[currentCell.getRow()-1][currentCell.getCol()].getCost());
+        // }
+        // totalCost += currentCell.getCost();
         
         //Cost toGoal:  West => neighbor cell col - goal cell col
         //              North => neighbor cell row - goal cell row
@@ -195,15 +222,23 @@ public class A_Star {
         //              South => neighbor cell row - goal cell row
         //Cost final:   Cost NeighborCell + toGoal
         
-        if (neighborCell.getCol() != goalCell.getCol())
+        // if (neighborCell.getCol() != goalCell.getCol())
+        // {
+        //     totalCost += (2 * (Math.abs(neighborCell.getCol() - goalCell.getCol())));
+        // }
+        if (neighborCell.getCol() < goalCell.getCol())      //If moving right
         {
             totalCost += (2 * (Math.abs(neighborCell.getCol() - goalCell.getCol())));
         }
-        if (neighborCell.getRow() < goalCell.getRow())
+        else if (neighborCell.getCol() > goalCell.getCol()) //If moving left
+        {
+            totalCost += (2 * (Math.abs(neighborCell.getCol() - goalCell.getCol())));
+        }
+        if (neighborCell.getRow() < goalCell.getRow())      //If moving down
         {
             totalCost += (3 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
         }
-        else if (neighborCell.getRow() > goalCell.getRow())
+        else if (neighborCell.getRow() > goalCell.getRow()) //If moving up
         {
             totalCost += (1 * (Math.abs(neighborCell.getRow() - goalCell.getRow())));
         }

@@ -9,6 +9,13 @@
             "name": "CodeLens (Launch) - A_Star",
             "request": "launch",
             "mainClass": "A_Star",
+            "projectName": "AI_Project_1_8a000051"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - A_Star",
+            "request": "launch",
+            "mainClass": "A_Star",
             "projectName": "AI_Project_1_9a25005b"
         },
         {
